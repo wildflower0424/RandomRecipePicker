@@ -3,13 +3,27 @@ from PIL import ImageTk
 import sqlite3
 from numpy import random
 import pyglet
+import sys
+import os
+
+#https://stackoverflow.com/questions/31836104/pyinstaller-and-onefile-how-to-include-an-image-in-the-exe-file
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS2
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
 
 # set colours
 bg_colour = "#3d6466"
 
 # load custom fonts
-pyglet.font.add_file("fonts/Ubuntu-Bold.ttf")
-pyglet.font.add_file("fonts/Shanti-Regular.ttf")
+pyglet.font.add_file(resource_path("fonts\\Ubuntu-Bold.ttf"))
+pyglet.font.add_file(resource_path("fonts\\Shanti-Regular.ttf"))
 
 def clear_widgets(frame):
 	# select all frame widgets and delete them
@@ -18,7 +32,7 @@ def clear_widgets(frame):
 
 def fetch_db():
 	# connect an sqlite database
-	connection = sqlite3.connect("data/recipes.db")
+	connection = sqlite3.connect(resource_path("data\\recipes.db"))
 	cursor = connection.cursor()
 
 	# fetch all the table names
@@ -75,7 +89,7 @@ def load_frame1():
 	frame1.pack_propagate(False)
 
 	# create logo widget
-	logo_img = ImageTk.PhotoImage(file="assets/RRecipe_logo.png")
+	logo_img = ImageTk.PhotoImage(file=resource_path("assets\\RRecipe_logo.png"))
 	logo_widget = tk.Label(frame1, image=logo_img, bg=bg_colour)
 	logo_widget.image = logo_img
 	logo_widget.pack()
@@ -113,7 +127,7 @@ def load_frame2():
 	title, ingredients = pre_process(recipe_name, table_records)
 
 	# create logo widget
-	logo_img = ImageTk.PhotoImage(file="assets/RRecipe_logo_bottom.png")
+	logo_img = ImageTk.PhotoImage(file=resource_path("assets\\RRecipe_logo_bottom.png"))
 	logo_widget = tk.Label(frame2, image=logo_img, bg=bg_colour)
 	logo_widget.image = logo_img
 	logo_widget.pack(pady=20)
